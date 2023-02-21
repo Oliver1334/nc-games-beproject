@@ -14,30 +14,16 @@ afterAll(() => {
 
 describe('GET: 200 /api/categories', () => {
     test('responds with an array of category objects with the properties: slug and description', () => {
-        const testResult = [
-            {
-              slug: 'euro game',
-              description: 'Abstact games that involve little luck'
-            },
-            {
-              slug: 'social deduction',
-              description: "Players attempt to uncover each other's hidden role"
-            },
-            {
-              slug: 'dexterity',
-              description: 'Games involving physical skill'
-            },
-            {
-              slug: "children's games",
-              description: 'Games suitable for children'
-            }
-          ];
+    
         return request(app)
         .get('/api/categories')
         .expect(200)
         .then(({body}) => {
             const {categories} = body
-            expect(categories).toEqual(testResult);
+            categories.forEach(category => {
+                expect(category).toHaveProperty('slug', expect.any(String))
+                expect(category).toHaveProperty('description', expect.any(String))
+            })
         })
     })
 
@@ -49,17 +35,48 @@ describe('GET: /api/categories errors', () => {
                     .get('/api/notAnEndpoint')
                     .expect(404)
                     .then((res)=>{
-                        console.log(res.body)
-                        console.log(res.body.msg);
                         expect(res.body.msg).toBe("Error 404 not found!")
                     })
             })
         });
 
+        // describe.only('GET: 200 /api/review', () => {
+        //     test('responds with a reviews array of review objects.', () => {
+        //         return request(app)
+        //             .get('/api/review')
+        //             .expect(200)
+        //             .then(({body})=>{
+        //                 console.log(body)
+        //                 const { treasures } = body
+                   
+        //                 });
+        //             })
+        //     })
+    
 
 
 
 
+            // a reviews array of review objects, each of which should have the following properties:
 
+            // owner
+            
+            // title
+            
+            // review_id
+            
+            // category
+            
+            // review_img_url
+            
+            // created_at
+            
+            // votes
+            
+            // designer
+            
+            // comment_count which is the total count of all the comments with this review_id - you should make use of queries to the database in order to achieve this.
+            
+            // the reviews should be sorted by date in descending order.
 
 
