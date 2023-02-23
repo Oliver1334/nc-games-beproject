@@ -45,7 +45,6 @@ describe("GET: 200 /api/reviews", () => {
       .expect(200)
       .then(({ body }) => {
         const { reviews } = body;
-        console.log(reviews);
         reviews.forEach((review) => {
           expect(review).toHaveProperty("owner", expect.any(String));
           expect(review).toHaveProperty("title", expect.any(String));
@@ -110,5 +109,58 @@ describe("GET: /api/reviews/:review_id errors", () => {
   });
 });
 
-        
+
+describe("GET:200 /api/reviews/:review_id/comments", () => {
+    test("responds with an array of comments objects for the given review_id with 6 properties", () => {
+      return request(app)
+        .get("/api/reviews/3/comments")
+        .expect(200)
+        .then(({ body }) => {
+          const {comments} = body
+          comments.forEach((comment) => {
+          expect(comment.review_id).toBe(3);
+          expect(comment).toHaveProperty("comment_id", expect.any(Number));
+          expect(comment).toHaveProperty("body", expect.any(String));
+          expect(comment).toHaveProperty("author", expect.any(String));
+          expect(comment).toHaveProperty("votes", expect.any(Number));
+          expect(comment).toHaveProperty("created_at", expect.any(String));
+        })
+        });
+    });
+    test("The returned comments array should be ordered with the most recent comments first!", () => {
+      return request(app)
+      .get("/api/reviews/3/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const {comments} = body;
+        expect(comments).toBeSortedBy("created_at", { descending: true });
+      });
+    })
+    test("When a Valid review ID is used but there are no comments for that ID a blank comments array is returned", () => {
+      return request(app)
+      .get("/api/reviews/5/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const {comments} = body;
+        expect(comments).toEqual([])
+      });
+    })
+  });
+
+  describe("GET: /api/reviews/:review_id/comments errors", () => {
+    test("Responds with a 404 custom error message when a valid but non existent review ID is input", () => {
+      return request(app)
+        .get("/api/reviews/15/comments")
+        .expect(404)
+        .then((res) => {
+          expect(res.text).toBe("Review_id not found");
+        });
+    });
+  })
+
+
+
+
+
+
 
