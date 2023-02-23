@@ -11,7 +11,6 @@ exports.psqlErrorHandler = (error, request, response, next) => {
 };
 
 exports.custom404Error = (error, request, response, next) => {
-  console.log(error);
   if (error.status && error.message) {
     response.status(error.status).send(error.message);
   } else {

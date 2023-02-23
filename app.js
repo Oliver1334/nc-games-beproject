@@ -12,7 +12,7 @@ app.get('/api/reviews', getReviews)
 
 app.get('/api/reviews/:review_id', getReviewId )
 
-app.get('api/reviews/:review_id/comments', getComments)
+app.get('/api/reviews/:review_id/comments', getComments)
 
 app.all("/*", status404Error)
 
