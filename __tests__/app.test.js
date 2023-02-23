@@ -89,6 +89,7 @@ describe("GET:200 /api/reviews/:review_id", () => {
   });
 });
 
+
 describe("GET: /api/reviews/:review_id errors", () => {
   test("responds with a bad request 400 error message for an invalid id", () => {
     return request(app)
@@ -107,6 +108,7 @@ describe("GET: /api/reviews/:review_id errors", () => {
       });
   });
 });
+
 
 describe("GET:200 /api/reviews/:review_id/comments", () => {
     test("responds with an array of comments objects for the given review_id with 6 properties", () => {
