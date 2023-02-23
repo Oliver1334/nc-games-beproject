@@ -108,3 +108,28 @@ describe("GET: /api/reviews/:review_id errors", () => {
       });
   });
 });
+
+describe.skip("GET:200 /api/reviews/:review_id/comments", () => {
+    test("responds with an array of comments objects for the given review_id with 6 properties", () => {
+      return request(app)
+        .get("/api/reviews/4/comments")
+        .expect(200)
+        .then(({ body }) => {
+          console.log(body);
+          
+        });
+    });
+  });
+
+
+//   Responds with:
+
+//   an array of comments for the given review_id of which each comment should have the following properties:
+//   - comment_id
+//   - votes
+//   - created_at
+//   - author
+//   - body
+//   - review_id
+//   separate test: comments should be served with the most recent comments first
+// error handling- 400 not found and 404 bad request
