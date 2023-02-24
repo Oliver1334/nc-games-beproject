@@ -3,6 +3,7 @@ const request = require("supertest");
 const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data/index");
 const db = require("../db/connection");
+const { ident } = require("pg-format");
 
 beforeEach(() => {
   return seed(data);
@@ -255,6 +256,120 @@ describe("POST:/api/reviews/:review_id/comments errors", () => {
   });
 });
 
-// error post from user that doesn't exist
-// error review id out of range
-// error review not a number
+describe("PATCH: 200 /api/reviews/:review_id", () => {
+  test("Takes an object with the property inc_votes and updates the corresponding review from id incrementing or decrementing the vote count by the number specified in the object. Returns the review. ", () => {
+    const reqBody = {inc_votes: 5};
+    return request(app)
+      .patch("/api/reviews/1")
+      .send(reqBody)
+      .expect(200)
+      .then(({ body }) => {
+        const {review} = body
+        expect(review.votes).toBe(6)
+        expect(review.review_id).toBe(1)
+        expect(review).toHaveProperty("title", expect.any(String));
+        expect(review).toHaveProperty("category", expect.any(String));
+        expect(review).toHaveProperty("designer", expect.any(String));
+        expect(review).toHaveProperty("owner", expect.any(String));
+        expect(review).toHaveProperty("review_body", expect.any(String));
+        expect(review).toHaveProperty("review_img_url", expect.any(String));
+        expect(review).toHaveProperty("created_at", expect.any(String));
+
+      });
+  });
+  test("Works for decrementing votes", () => {
+    const reqBody = {inc_votes: -100};
+    return request(app)
+      .patch("/api/reviews/1")
+      .send(reqBody)
+      .expect(200)
+      .then(({ body }) => {
+        const {review} = body
+        expect(review.votes).toBe(-99)
+      });
+  });
+  test("Ignores extra data added to the request body", () => {
+    const reqBody = {inc_votes: 5,
+    moreVotes: 6};
+    return request(app)
+      .patch("/api/reviews/1")
+      .send(reqBody)
+      .expect(200)
+      .then(({ body }) => {
+        const {review} = body
+        expect(review.votes).toBe(6)
+        expect(review.review_id).toBe(1)
+        expect(review).toHaveProperty("title", expect.any(String));
+        expect(review).toHaveProperty("category", expect.any(String));
+        expect(review).toHaveProperty("designer", expect.any(String));
+        expect(review).toHaveProperty("owner", expect.any(String));
+        expect(review).toHaveProperty("review_body", expect.any(String));
+        expect(review).toHaveProperty("review_img_url", expect.any(String));
+        expect(review).toHaveProperty("created_at", expect.any(String));
+
+      });
+});
+});
+
+describe("PATCH:/api/reviews/:review_id ERRORS", () => {
+  test("responds with a 400 bad request for a request body missing the required inc_votes property", () => {
+    const reqBody = {newVotes: 5}
+    return request(app)
+      .patch("/api/reviews/1")
+      .send(reqBody)
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Bad Request!");
+      });
+  });
+  test("responds with a 400 bad request for a request body with inc_votes value as a string not a number", () => {
+    const reqBody = {inc_votes: "five"}
+    return request(app)
+      .patch("/api/reviews/1")
+      .send(reqBody)
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Bad Request!");
+      });
+  });
+
+  test("responds with a 400 error when given an invalid review ID", () => {
+    const reqBody = {inc_votes: 5}
+    return request(app)
+      .patch("/api/reviews/notAnId")
+      .send(reqBody)
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Bad Request!");
+      });
+  });
+  test("404: responds with custom error msg when sent a query with a review_id that is out of range", () => {
+    const reqBody = {inc_votes: 5}
+    return request(app)
+      .patch("/api/reviews/999")
+      .send(reqBody)
+      .expect(404)
+      .then((res) => {
+        expect(res.text).toBe("Review_id not found");
+      });
+  });
+});
+
+// Request body accepts:
+
+// an object in the form { inc_votes: newVote }
+
+// newVote will indicate how much the votes property in the database should be updated bye.g.
+
+// { inc_votes : 1 } would increment the current review's vote property by 1
+
+// { inc_votes : -100 } would decrement the current review's vote property by 100
+
+// Responds with:
+
+// the updated review
+// Error handling 
+// 400 error missing required fields (newvote: 100) and one for (incvote: "100")
+// 400 bad request (votes:word)
+// custom 404 out of range review id
+// 404 review id notanID 

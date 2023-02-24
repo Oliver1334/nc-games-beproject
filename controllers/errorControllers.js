@@ -3,7 +3,9 @@ exports.status404Error = (request, response, next) => {
 };
 
 exports.psqlErrorHandler = (error, request, response, next) => {
-  if (error.code === "22P02") {
+
+  const psqlErrors = ["22P02", "23502"]
+  if (psqlErrors.includes(error.code)) {
     response.status(400).send({ msg: "Bad Request!" });
   } else {
     next(error);
@@ -11,6 +13,7 @@ exports.psqlErrorHandler = (error, request, response, next) => {
 };
 
 exports.custom404Error = (error, request, response, next) => {
+
   if (error.status && error.message) {
     response.status(error.status).send(error.message);
   } else {
