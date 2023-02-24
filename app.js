@@ -1,6 +1,6 @@
 const express = require("express");
 const { getCategories } = require("./controllers/categoryControllers");
-const { getReviews, getReviewId } = require("./controllers/reviewsControllers");
+const { getReviews, getReviewId, updateVotes } = require("./controllers/reviewsControllers");
 const {
   getComments,
   postCommentOnReview,
@@ -25,7 +25,14 @@ app.get("/api/reviews/:review_id/comments", getComments);
 
 app.post("/api/reviews/:review_id/comments", postCommentOnReview);
 
+app.patch("/api/reviews/:review_id", updateVotes)
+
+
+
+
 app.all("/*", status404Error);
+
+
 
 app.use(psqlErrorHandler);
 
