@@ -12,6 +12,9 @@ const {
   custom404Error,
 } = require("./controllers/errorControllers");
 const app = express();
+const cors = require ('cors');
+
+app.use(cors());
 
 app.use(express.json());
 
