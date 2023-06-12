@@ -374,6 +374,8 @@ describe.only("GET: 200 /api/users", () => {
 });
 
 
+//Add error tests for get users
+
 
 
 
