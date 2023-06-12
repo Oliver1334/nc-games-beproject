@@ -357,6 +357,31 @@ describe("PATCH:/api/reviews/:review_id ERRORS", () => {
   });
 });
 
+describe.only("GET: 200 /api/users", () => {
+  test("responds with an array of user objects including username, name and avatar_url properties", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const { users } = body;
+        users.forEach((review) => {
+          expect(review).toHaveProperty("username", expect.any(String));
+          expect(review).toHaveProperty("name", expect.any(String));
+          expect(review).toHaveProperty("avatar_url", expect.any(String));
+        });
+      });
+  });
+});
+
+
+
+
+
+
+
+
+
+
 // Request body accepts:
 
 // an object in the form { inc_votes: newVote }
