@@ -3,7 +3,8 @@ const { selectReviews, selectReview, insertVotes } = require("../models/reviews.
 
 
 exports.getReviews = (req, res, next) => {
-    selectReviews()
+  let {category, sort_by, order} = req.query;  //These are the queries in the request
+    selectReviews(category, sort_by, order)
       .then((reviews) => {
         res.status(200).send({ reviews });
       })
