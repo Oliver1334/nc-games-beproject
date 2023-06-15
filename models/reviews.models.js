@@ -17,24 +17,49 @@ exports.selectReviews = (category, sort_by = "created_at", order = "DESC") => {
   const orderGreenList = ["ASC", "DESC"]; // array of valid order options
 
   if (!sortGreenList.includes(sort_by) || !orderGreenList(order)) {
-    return Promise.reject({ status: 400, msg: "Bad Request!"});
+    return Promise.reject({ status: 400, msg: "Bad Request!"}); //checks if sort or order query is valid, sends error if not
   }
 
-  if (topic)
-
+  if (category) {
+    let categoryQuery = category;
+    const checkCategoryStr = `
+    SELECT * FROM categories
+    WHERE slug = $1 `;
+  
   return db
-    .query(
-      `
-        SELECT reviews.*, COUNT(comments.review_id) AS comment_count
+    .query(checkCategory, [categoryQuery])    //query to check if category is real?
+    .then(({rows}) => {
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Not Found"});
+      } else {
+        let selectReviewsStr = `
+        SELECT reviews.*, COUNT(comments.review_id) 
+        AS comment_count
         FROM reviews
-        LEFT JOIN comments
-        ON comments.review_id = reviews.review_id 
+        LEFT JOIN comments ON comments.review_id = reviews.review_id 
+        WHERE reviews.category = $1
         GROUP BY reviews.review_id
-        ORDER BY reviews.created_at DESC;
-    `
-    )
-    .then(({ rows }) => rows);
-};
+        ORDER BY reviews.${sort_by} ${order};`;  //uses queries in sql query   
+        return db.query(selectReviewStr, [category])
+        .then(({ rows }) => {
+          return rows;
+        }); 
+      };
+    });
+  } else {
+    let selectReviewsStr = `
+    SELECT reviews.*, COUNT(comments.review_id) 
+    AS comment_count
+    FROM reviews
+    LEFT JOIN comments ON comments.review_id = reviews.review_id 
+    GROUP BY reviews.review_id
+    ORDER BY reviews.${sort_by} ${order};`; 
+    return db.query(selectReviewsStr)  // run this is no category query present
+    .then(({ rows }) => {
+      return rows;
+    });
+  };
+}
 
 exports.selectReview = (review_id) => {
   return db
