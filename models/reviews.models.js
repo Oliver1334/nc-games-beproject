@@ -1,6 +1,27 @@
 const db = require("../db/connection");
 
-exports.selectReviews = () => {
+exports.selectReviews = (category, sort_by = "created_at", order = "DESC") => {
+  // default values for queries
+
+  const sortGreenList = [
+    //array of valid sort_by options
+    "review_id",
+    "title",
+    "category",
+    "designer",
+    "owner",
+    "created_at",
+    "votes",
+  ];
+
+  const orderGreenList = ["ASC", "DESC"]; // array of valid order options
+
+  if (!sortGreenList.includes(sort_by) || !orderGreenList(order)) {
+    return Promise.reject({ status: 400, msg: "Bad Request!"});
+  }
+
+  if (topic)
+
   return db
     .query(
       `
@@ -12,54 +33,47 @@ exports.selectReviews = () => {
         ORDER BY reviews.created_at DESC;
     `
     )
-    .then(({ rows }) => rows); 
+    .then(({ rows }) => rows);
 };
 
 exports.selectReview = (review_id) => {
-
-    return db
-    .query(
-        `SELECT * FROM reviews WHERE review_id = $1;`, [review_id]
-    )
-    .then(({rows}) => {
-      
-      
-      if(rows.length === 0){
-        return Promise.reject({status: 404, message: "Review_id not found"})
+  return db
+    .query(`SELECT * FROM reviews WHERE review_id = $1;`, [review_id])
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, message: "Review_id not found" });
       }
 
-
-     return rows[0];
-    })
-}
+      return rows[0];
+    });
+};
 
 exports.insertVotes = (review_id, inc_votes) => {
-return db
-.query(
-  `
+  return db
+    .query(
+      `
     SELECT *
     FROM reviews
     WHERE review_id = $1;
     `,
-  [review_id]
-)
-.then(({ rows }) => {
-  if (rows.length === 0) {
-    return Promise.reject({ status: 404, message: "Review_id not found" });
-  } else {
-  return db
-  .query(
-    `
+      [review_id]
+    )
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, message: "Review_id not found" });
+      } else {
+        return db.query(
+          `
     UPDATE reviews
     SET votes = votes + $1
     WHERE review_id = $2
     RETURNING *;
-    `, [inc_votes, review_id]
-  )
-  }
-})
-  .then(({rows}) => {
-    return rows[0];
-  })
-}
-
+    `,
+          [inc_votes, review_id]
+        );
+      }
+    })
+    .then(({ rows }) => {
+      return rows[0];
+    });
+};
