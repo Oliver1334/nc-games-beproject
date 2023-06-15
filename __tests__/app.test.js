@@ -357,7 +357,7 @@ describe("PATCH:/api/reviews/:review_id ERRORS", () => {
   });
 });
 
-describe.only("GET: 200 /api/users", () => {
+describe("GET: 200 /api/users", () => {
   test("responds with an array of user objects including username, name and avatar_url properties", () => {
     return request(app)
       .get("/api/users")
@@ -373,9 +373,15 @@ describe.only("GET: 200 /api/users", () => {
   });
 });
 
-
-//Add error tests for get users
-
+describe.skip("GET: 200 /api/reviews using queries", () => {
+  test('returns all reviews from a specified category', () => {
+    return request(app).get('/api/articles?category=euro+game')
+    .expect(200)
+    .then(({body}) => {
+console.log(body)
+    })
+  })
+})
 
 
 
