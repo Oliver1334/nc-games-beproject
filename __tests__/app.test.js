@@ -374,14 +374,21 @@ describe("GET: 200 /api/users", () => {
   });
 });
 
-describe.skip("GET: 200 /api/reviews using queries", () => {
+describe.only("GET: 200 /api/reviews using queries", () => {
   test('returns all reviews from a specified category', () => {
-    return request(app).get('/api/articles?category=euro+game')
+    return request(app).get('/api/reviews?category=social+deduction')
     .expect(200)
     .then(({body}) => {
-console.log(body)
-    })
-  })
+      const {reviews} = body;
+      expect(reviews.length).toBe(11)
+      reviews.forEach((review) => {
+        expect(review.category).toBe('social deduction')
+      });
+    });
+  });
+
+
+
 })
 
 
