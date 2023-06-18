@@ -39,7 +39,7 @@ exports.selectReviews = (category, sort_by = "created_at", order = "DESC") => {
         LEFT JOIN comments ON comments.review_id = reviews.review_id 
         WHERE reviews.category = $1
         GROUP BY reviews.review_id
-        ORDER BY reviews.${sort_by} ${order};`;  //uses queries in sql query   
+        ORDER BY ${sort_by} ${order};`;  //uses queries in sql query   
         return db.query(selectReviewsStr, [category])
         .then(({ rows }) => {
           return rows;
@@ -53,7 +53,7 @@ exports.selectReviews = (category, sort_by = "created_at", order = "DESC") => {
     FROM reviews
     LEFT JOIN comments ON comments.review_id = reviews.review_id 
     GROUP BY reviews.review_id
-    ORDER BY reviews.${sort_by} ${order};`; 
+    ORDER BY ${sort_by} ${order};`; 
     return db.query(selectReviewsStr)  // run this is no category query present
     .then(({ rows }) => {
       return rows;
