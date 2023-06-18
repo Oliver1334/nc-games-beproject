@@ -386,6 +386,26 @@ describe.only("GET: 200 /api/reviews using queries", () => {
       });
     });
   });
+  test('Returns all reviews sorted by designer, descending by default when no order query is present', () => {
+    return request(app).get('/api/reviews?sort_by=designer')
+    .expect(200)
+    .then(({body}) => {
+      const {reviews} = body;
+      console.log(reviews)
+      expect(reviews.length).not.toBe(0);
+      expect(reviews).toBeSortedBy('designer', {descending : true})
+    });
+  });
+  test('Returns all reviews sorted by owner, in ascending order', () => {
+    return request(app).get('/api/reviews?sort_by=owner&order=ASC')
+    .expect(200)
+    .then(({body}) => {
+      const {reviews} = body;
+      console.log(reviews)
+      expect(reviews.length).not.toBe(0);
+      expect(reviews).toBeSortedBy('owner', {ascending : true})
+    });
+  });
 
 
 
