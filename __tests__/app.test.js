@@ -406,10 +406,22 @@ describe.only("GET: 200 /api/reviews using queries", () => {
       expect(reviews).toBeSortedBy('owner', {ascending : true})
     });
   });
-
+  test('Returns all reviews sorted by owner, in ascending order with the category of social deduction', () => {
+    return request(app).get('/api/reviews?sort_by=owner&order=ASC&category=social+deduction')
+    .expect(200)
+    .then(({body}) => {
+      const {reviews} = body;
+      console.log(reviews)
+      expect(reviews.length).not.toBe(0);
+      expect(reviews).toBeSortedBy('owner', {ascending : true})
+      reviews.forEach((review) => {
+        expect(review.category).toBe('social deduction')
+    });
+  });
 
 
 })
+});
 
 
 
