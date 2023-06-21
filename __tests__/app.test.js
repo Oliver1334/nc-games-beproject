@@ -418,10 +418,24 @@ describe.only("GET: 200 /api/reviews using queries", () => {
         expect(review.category).toBe('social deduction')
     });
   });
-
-
 })
+test('Returns all reviews sorted by designer, in descending order with the category of dexterity', () => {
+  return request(app).get('/api/reviews?sort_by=designer&order=DESC&category=dexterity')
+  .expect(200)
+  .then(({body}) => {
+    const {reviews} = body;
+    console.log(reviews)
+    expect(reviews.length).not.toBe(0);
+    expect(reviews).toBeSortedBy('designer', {descending : true})
+    reviews.forEach((review) => {
+      expect(review.category).toBe('dexterity')
+  });
 });
+})
+
+});
+
+// error testing
 
 
 
