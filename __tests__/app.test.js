@@ -418,20 +418,19 @@ describe.only("GET: 200 /api/reviews using queries", () => {
     });
   });
 })
-test('Returns all reviews sorted by designer, in descending order with the category of dexterity', () => {
-  return request(app).get('/api/reviews?sort_by=designer&order=DESC&category=dexterity')
+test('Returns all reviews sorted by date created, in ascending order with the category of dexterity', () => {
+  return request(app).get('/api/reviews?sort_by=created_at&order=ASC&category=dexterity')
   .expect(200)
   .then(({body}) => {
     const {reviews} = body;
     console.log(reviews)
     expect(reviews.length).not.toBe(0);
-    expect(reviews).toBeSortedBy('designer', {descending : true})
+    expect(reviews).toBeSortedBy('created_at', {ascending : true})
     reviews.forEach((review) => {
       expect(review.category).toBe('dexterity')
   });
 });
 })
-
 });
 
 // error testing
