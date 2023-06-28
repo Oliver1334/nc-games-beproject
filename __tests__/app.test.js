@@ -433,6 +433,18 @@ test('Returns all reviews sorted by date created, in ascending order with the ca
 });
 });
 test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
+  return request(app).get('/api/reviews?sort_by=rubbish')
+  .expect(400)
+  .then(({body}) => {
+    console.log(body);
+});
+});
+
+
+
+
+
+test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
   return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
   .expect(400)
   .then(({body}) => {
