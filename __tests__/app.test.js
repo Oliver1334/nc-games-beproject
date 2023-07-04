@@ -440,11 +440,11 @@ test.skip('When attempting to sort by an invalid value a 400 bad request error i
 });
 });
 test.only('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=owner')
+  return request(app).get('/api/reviews?sort_by=created_at')
   .expect(200)
   .then(({body}) => {
     const {reviews} = body;
-    expect(reviews).toBeSortedBy('owner', {descending : true})
+    expect(reviews).toBeSortedBy('created_at', {descending : true})
 });
 });
 
