@@ -432,47 +432,43 @@ test('Returns all reviews sorted by date created, in ascending order with the ca
   });
 });
 });
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
+test('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
+  return request(app).get('/api/reviews?sort_by=created_at')
+  .expect(200)
+  .then(({body}) => {
+    const {reviews} = body;
+    expect(reviews).toBeSortedBy('created_at', {descending : true})
+});
+});
+test('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
+  return request(app).get('/api/reviews?sort_by=created_at')
+  .expect(200)
+  .then(({body}) => {
+    const {reviews} = body;
+    expect(reviews).toBeSortedBy('created_at', {descending : true})
+});
+});
+test('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
+  return request(app).get('/api/reviews?sort_by=created_at')
+  .expect(200)
+  .then(({body}) => {
+    const {reviews} = body;
+    expect(reviews).toBeSortedBy('created_at', {descending : true})
+});
+});
+test.only('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
   return request(app).get('/api/reviews?sort_by=rubbish')
   .expect(400)
-  .then(({body}) => {
-    console.log(body);
+  .then((res) => {
+    expect(res.text).toBe("Bad Request!");
 });
 });
-test.only('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=created_at')
-  .expect(200)
-  .then(({body}) => {
-    const {reviews} = body;
-    expect(reviews).toBeSortedBy('created_at', {descending : true})
-});
-});
-test.only('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=created_at')
-  .expect(200)
-  .then(({body}) => {
-    const {reviews} = body;
-    expect(reviews).toBeSortedBy('created_at', {descending : true})
-});
-});
-test.only('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=created_at')
-  .expect(200)
-  .then(({body}) => {
-    const {reviews} = body;
-    expect(reviews).toBeSortedBy('created_at', {descending : true})
-});
-});
-
-
-
-
 
 test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
   return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
   .expect(400)
   .then(({body}) => {
-    expect(body.msg).toBe("Bad Request");
+    expect(body.message).toBe("Bad Request");
 });
 });
 

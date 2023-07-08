@@ -17,7 +17,7 @@ exports.selectReviews = (category, sort_by = "created_at", order = "DESC") => {
   const orderGreenList = ["ASC", "DESC"]; // array of valid order options
 
   if (!sortGreenList.includes(sort_by) || !orderGreenList.includes(order)) {
-    return Promise.reject({ status: 400, msg: "Bad Request!"}); //checks if sort or order query is valid, sends error if not
+    return Promise.reject({ status: 400, message: "Bad Request!"}); //checks if sort or order query is valid, sends error if not
   }
 
   if (category) {
@@ -30,7 +30,7 @@ exports.selectReviews = (category, sort_by = "created_at", order = "DESC") => {
     .query(checkCategoryStr, [categoryQuery])    //query to check if category is real?
     .then(({rows}) => {
       if (rows.length === 0) {
-        return Promise.reject({ status: 404, msg: "Not Found"});
+        return Promise.reject({ status: 404, message: "Not Found"});
       } else {
         let selectReviewsStr = `
         SELECT reviews.*, COUNT(comments.review_id) 
