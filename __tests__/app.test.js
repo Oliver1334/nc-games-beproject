@@ -458,8 +458,8 @@ test('When attempting to sort by an invalid value a 400 bad request error is sen
 test.only('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
   return request(app).get('/api/reviews?sort_by=rubbish')
   .expect(400)
-  .then(({body}) => {
-    console.log(body);
+  .then((res) => {
+    expect(res.text).toBe("Bad Request!");
 });
 });
 
@@ -467,7 +467,7 @@ test.skip('When attempting to sort by an invalid value a 400 bad request error i
   return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
   .expect(400)
   .then(({body}) => {
-    expect(body.msg).toBe("Bad Request");
+    expect(body.message).toBe("Bad Request");
 });
 });
 
