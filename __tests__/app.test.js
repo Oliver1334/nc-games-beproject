@@ -710,6 +710,14 @@ test.skip('When attempting to sort by an invalid value a 400 bad request error i
 });
 });
 
+test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
+  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
+  .expect(400)
+  .then(({body}) => {
+    expect(body.message).toBe("Bad Request");
+});
+});
+
 
 
 
