@@ -91,7 +91,6 @@ describe("GET:200 /api/reviews/:review_id", () => {
   });
 });
 
-
 describe("GET: /api/reviews/:review_id errors", () => {
   test("responds with a bad request 400 error message for an invalid id", () => {
     return request(app)
@@ -110,7 +109,6 @@ describe("GET: /api/reviews/:review_id errors", () => {
       });
   });
 });
-
 
 describe("GET:200 /api/reviews/:review_id/comments", () => {
   test("responds with an array of comments objects for the given review_id with 6 properties", () => {
@@ -261,15 +259,15 @@ describe("POST:/api/reviews/:review_id/comments errors", () => {
 
 describe("PATCH: 200 /api/reviews/:review_id", () => {
   test("Takes an object with the property inc_votes and updates the corresponding review from id incrementing or decrementing the vote count by the number specified in the object. Returns the review. ", () => {
-    const reqBody = {inc_votes: 5};
+    const reqBody = { inc_votes: 5 };
     return request(app)
       .patch("/api/reviews/1")
       .send(reqBody)
       .expect(200)
       .then(({ body }) => {
-        const {review} = body
-        expect(review.votes).toBe(6)
-        expect(review.review_id).toBe(1)
+        const { review } = body;
+        expect(review.votes).toBe(6);
+        expect(review.review_id).toBe(1);
         expect(review).toHaveProperty("title", expect.any(String));
         expect(review).toHaveProperty("category", expect.any(String));
         expect(review).toHaveProperty("designer", expect.any(String));
@@ -277,31 +275,29 @@ describe("PATCH: 200 /api/reviews/:review_id", () => {
         expect(review).toHaveProperty("review_body", expect.any(String));
         expect(review).toHaveProperty("review_img_url", expect.any(String));
         expect(review).toHaveProperty("created_at", expect.any(String));
-
       });
   });
   test("Works for decrementing votes", () => {
-    const reqBody = {inc_votes: -100};
+    const reqBody = { inc_votes: -100 };
     return request(app)
       .patch("/api/reviews/1")
       .send(reqBody)
       .expect(200)
       .then(({ body }) => {
-        const {review} = body
-        expect(review.votes).toBe(-99)
+        const { review } = body;
+        expect(review.votes).toBe(-99);
       });
   });
   test("Ignores extra data added to the request body", () => {
-    const reqBody = {inc_votes: 5,
-    moreVotes: 6};
+    const reqBody = { inc_votes: 5, moreVotes: 6 };
     return request(app)
       .patch("/api/reviews/1")
       .send(reqBody)
       .expect(200)
       .then(({ body }) => {
-        const {review} = body
-        expect(review.votes).toBe(6)
-        expect(review.review_id).toBe(1)
+        const { review } = body;
+        expect(review.votes).toBe(6);
+        expect(review.review_id).toBe(1);
         expect(review).toHaveProperty("title", expect.any(String));
         expect(review).toHaveProperty("category", expect.any(String));
         expect(review).toHaveProperty("designer", expect.any(String));
@@ -309,14 +305,13 @@ describe("PATCH: 200 /api/reviews/:review_id", () => {
         expect(review).toHaveProperty("review_body", expect.any(String));
         expect(review).toHaveProperty("review_img_url", expect.any(String));
         expect(review).toHaveProperty("created_at", expect.any(String));
-
       });
-});
+  });
 });
 
 describe("PATCH:/api/reviews/:review_id ERRORS", () => {
   test("responds with a 400 bad request for a request body missing the required inc_votes property", () => {
-    const reqBody = {newVotes: 5}
+    const reqBody = { newVotes: 5 };
     return request(app)
       .patch("/api/reviews/1")
       .send(reqBody)
@@ -326,7 +321,7 @@ describe("PATCH:/api/reviews/:review_id ERRORS", () => {
       });
   });
   test("responds with a 400 bad request for a request body with inc_votes value as a string not a number", () => {
-    const reqBody = {inc_votes: "five"}
+    const reqBody = { inc_votes: "five" };
     return request(app)
       .patch("/api/reviews/1")
       .send(reqBody)
@@ -337,7 +332,7 @@ describe("PATCH:/api/reviews/:review_id ERRORS", () => {
   });
 
   test("responds with a 400 error when given an invalid review ID", () => {
-    const reqBody = {inc_votes: 5}
+    const reqBody = { inc_votes: 5 };
     return request(app)
       .patch("/api/reviews/notAnId")
       .send(reqBody)
@@ -347,7 +342,7 @@ describe("PATCH:/api/reviews/:review_id ERRORS", () => {
       });
   });
   test("404: responds with custom error msg when sent a query with a review_id that is out of range", () => {
-    const reqBody = {inc_votes: 5}
+    const reqBody = { inc_votes: 5 };
     return request(app)
       .patch("/api/reviews/999")
       .send(reqBody)
@@ -375,884 +370,113 @@ describe("GET: 200 /api/users", () => {
 });
 
 describe.only("GET: 200 /api/reviews using queries", () => {
-  test('returns all reviews from a specified category', () => {
-    return request(app).get('/api/reviews?category=social+deduction')
-    .expect(200)
-    .then(({body}) => {
-      const {reviews} = body;
-      expect(reviews.length).toBe(11)
-      reviews.forEach((review) => {
-        expect(review.category).toBe('social deduction')
+  test("returns all reviews from a specified category", () => {
+    return request(app)
+      .get("/api/reviews?category=social+deduction")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews.length).toBe(11);
+        reviews.forEach((review) => {
+          expect(review.category).toBe("social deduction");
+        });
       });
-    });
   });
-  test('Returns all reviews sorted by designer, descending by default when no order query is present', () => {
-    return request(app).get('/api/reviews?sort_by=designer')
-    .expect(200)
-    .then(({body}) => {
-      const {reviews} = body;
-      console.log(reviews)
-      expect(reviews.length).not.toBe(0);
-      expect(reviews).toBeSortedBy('designer', {descending : true})
-    });
+  test("Returns all reviews sorted by designer, descending by default when no order query is present", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=designer")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews.length).not.toBe(0);
+        expect(reviews).toBeSortedBy("designer", { descending: true });
+      });
   });
-  test('Returns all reviews sorted by owner, in ascending order', () => {
-    return request(app).get('/api/reviews?sort_by=owner&order=ASC')
-    .expect(200)
-    .then(({body}) => {
-      const {reviews} = body;
-      console.log(reviews)
-      expect(reviews.length).not.toBe(0);
-      expect(reviews).toBeSortedBy('owner', {ascending : true})
-    });
+  test("Returns all reviews sorted by owner, in ascending order", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=owner&order=ASC")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews.length).not.toBe(0);
+        expect(reviews).toBeSortedBy("owner", { ascending: true });
+      });
   });
-  test('Returns all reviews sorted by owner, in ascending order with the category of social deduction', () => {
-    return request(app).get('/api/reviews?sort_by=owner&order=ASC&category=social+deduction')
-    .expect(200)
-    .then(({body}) => {
-      const {reviews} = body;
-      console.log(reviews)
-      expect(reviews.length).not.toBe(0);
-      expect(reviews).toBeSortedBy('owner', {ascending : true})
-      reviews.forEach((review) => {
-        expect(review.category).toBe('social deduction')
-    });
+  test("Returns all reviews sorted by owner, in ascending order with the category of social deduction", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=owner&order=ASC&category=social+deduction")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews.length).not.toBe(0);
+        expect(reviews).toBeSortedBy("owner", { ascending: true });
+        reviews.forEach((review) => {
+          expect(review.category).toBe("social deduction");
+        });
+      });
   });
-})
-test('Returns all reviews sorted by date created, in ascending order with the category of dexterity', () => {
-  return request(app).get('/api/reviews?sort_by=created_at&order=ASC&category=dexterity')
-  .expect(200)
-  .then(({body}) => {
-    const {reviews} = body;
-    console.log(reviews)
-    expect(reviews.length).not.toBe(0);
-    expect(reviews).toBeSortedBy('created_at', {ascending : true})
-    reviews.forEach((review) => {
-      expect(review.category).toBe('dexterity')
+  test("Returns all reviews sorted by date created, in ascending order with the category of dexterity", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=created_at&order=ASC&category=dexterity")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        expect(reviews.length).not.toBe(0);
+        expect(reviews).toBeSortedBy("created_at", { ascending: true });
+        reviews.forEach((review) => {
+          expect(review.category).toBe("dexterity");
+        });
+      });
+  });
+
+
+
+
+  test("When attempting to sort by an invalid value a 400 bad request error is sent", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=rubbish")
+      .expect(400)
+      .then((res) => {
+        expect(res.text).toBe("Bad Request!");
+      });
   });
 });
-});
-test('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=created_at')
-  .expect(200)
-  .then(({body}) => {
-    const {reviews} = body;
-    expect(reviews).toBeSortedBy('created_at', {descending : true})
-});
-});
-test('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=created_at')
-  .expect(200)
-  .then(({body}) => {
-    const {reviews} = body;
-    expect(reviews).toBeSortedBy('created_at', {descending : true})
-});
-});
-test('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=created_at')
-  .expect(200)
-  .then(({body}) => {
-    const {reviews} = body;
-    expect(reviews).toBeSortedBy('created_at', {descending : true})
-});
-});
-test.only('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=rubbish')
-  .expect(400)
-  .then((res) => {
-    expect(res.text).toBe("Bad Request!");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
 
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
-
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
-});
-});
+describe.only("GET: 200 /api/reviews using queries ERRORS", () => {
+  test("When attempting to sort by an invalid value a 400 bad request error is sent", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=rubbish")
+      .expect(400)
+      .then((res) => {
+        expect(res.text).toBe("Bad Request!");
+      });
+  });
+
+  test("A 400 bad request error is sent if attempting to order by an invalid value", () => {
+    return request(app)
+    .get("/api/reviews?sort_by=created_at&order=blimey&sort_by=social+deduction")
+    .expect(400)
+    .then((res) => {
+      console.log(res)
+      expect(res.text).toBe("Bad Request!")
+    })
+  })
+
+  test.only("returns a 404 not found if a category entered does not exist in the database", () => {
+    return request(app).get('/api/reviews?sort_by=owner&category=horror')
+    .expect(404)
+    .then((res) => {
+      console.log(res)
+      expect(res.text).toBe("Not Found")
+    })
+  })
 
-test.skip('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-  return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-  .expect(400)
-  .then(({body}) => {
-    expect(body.message).toBe("Bad Request");
 });
-});
 
 
 
-
-});
 
 // error testing
-
-
-// test('When attempting to sort by an invalid value a 400 bad request error is sent', () => {
-//   return request(app).get('/api/reviews?sort_by=wrongvalue&order=ASC&category=dexterity')
-//   .expect(400)
-//   .then({body}) => {
-//     expect(body.msg).toBe("Bad Request")
-//   }
-//   });
-// })
-
-
-
-
-
-
 
 
 // Request body accepts:
@@ -1268,8 +492,8 @@ test.skip('When attempting to sort by an invalid value a 400 bad request error i
 // Responds with:
 
 // the updated review
-// Error handling 
+// Error handling
 // 400 error missing required fields (newvote: 100) and one for (incvote: "100")
 // 400 bad request (votes:word)
 // custom 404 out of range review id
-// 404 review id notanID 
+// 404 review id notanID
