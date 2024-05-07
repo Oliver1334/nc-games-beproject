@@ -54,7 +54,7 @@ exports.selectReviews = (category, sort_by = "created_at", order = "DESC") => {
     LEFT JOIN comments ON comments.review_id = reviews.review_id 
     GROUP BY reviews.review_id
     ORDER BY ${sort_by} ${order};`; 
-    return db.query(selectReviewsStr)  // run this is no category query present
+    return db.query(selectReviewsStr)  // run this if no category query present
     .then(({ rows }) => {
       return rows;
     });
@@ -63,7 +63,13 @@ exports.selectReviews = (category, sort_by = "created_at", order = "DESC") => {
 
 exports.selectReview = (review_id) => {
   return db
-    .query(`SELECT * FROM reviews WHERE review_id = $1;`, [review_id])
+    .query(`SELECT reviews.*, COUNT(comments.review_id)
+    AS comment_count
+    FROM reviews
+    LEFT JOIN comments
+    ON comments.review_id = reviews.review_id
+    WHERE reviews.review_id = $1
+    GROUP BY reviews.review_id`, [review_id])
     .then(({ rows }) => {
       if (rows.length === 0) {
         return Promise.reject({ status: 404, message: "Review_id not found" });

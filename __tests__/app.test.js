@@ -5,7 +5,6 @@ const data = require("../db/data/test-data/index");
 const db = require("../db/connection");
 const { ident } = require("pg-format");
 
-
 beforeEach(() => {
   return seed(data);
 });
@@ -71,8 +70,8 @@ describe("GET: 200 /api/reviews", () => {
   });
 });
 
-describe("GET:200 /api/reviews/:review_id", () => {
-  test("responds with a review object with 9 properties", () => {
+describe.only("GET:200 /api/reviews/:review_id", () => {
+  test("responds with a review object with 9 properties and a 10th comment_count property", () => {
     return request(app)
       .get("/api/reviews/4")
       .expect(200)
@@ -89,6 +88,29 @@ describe("GET:200 /api/reviews/:review_id", () => {
         expect(review).toHaveProperty("votes", expect.any(Number));
       });
   });
+  test("responds with an accurate comment count property for the given review id", () => {
+    return request(app)
+    .get("/api/reviews/3")
+    .expect(200)
+    .then(({body}) => {
+      const { review } = body;
+      expect(review.comment_count).toBe("3")
+    })
+  })
+  test("returns a comment_count of 0 when there are no comments for the given review id", () => {
+    return request(app)
+    .get("/api/reviews/1")
+    .expect(200)
+    .then(({body}) => {
+      const { review } = body;
+      expect(review.comment_count).toBe("0")
+    })
+  })
+
+
+
+
+
 });
 
 describe("GET: /api/reviews/:review_id errors", () => {
@@ -369,7 +391,7 @@ describe("GET: 200 /api/users", () => {
   });
 });
 
-describe.only("GET: 200 /api/reviews using queries", () => {
+describe("GET: 200 /api/reviews using queries", () => {
   test("returns all reviews from a specified category", () => {
     return request(app)
       .get("/api/reviews?category=social+deduction")
@@ -429,9 +451,6 @@ describe.only("GET: 200 /api/reviews using queries", () => {
       });
   });
 
-
-
-
   test("When attempting to sort by an invalid value a 400 bad request error is sent", () => {
     return request(app)
       .get("/api/reviews?sort_by=rubbish")
@@ -442,7 +461,7 @@ describe.only("GET: 200 /api/reviews using queries", () => {
   });
 });
 
-describe.only("GET: 200 /api/reviews using queries ERRORS", () => {
+describe("GET: 200 /api/reviews using queries ERRORS", () => {
   test("When attempting to sort by an invalid value a 400 bad request error is sent", () => {
     return request(app)
       .get("/api/reviews?sort_by=rubbish")
@@ -454,30 +473,26 @@ describe.only("GET: 200 /api/reviews using queries ERRORS", () => {
 
   test("A 400 bad request error is sent if attempting to order by an invalid value", () => {
     return request(app)
-    .get("/api/reviews?sort_by=created_at&order=blimey&sort_by=social+deduction")
-    .expect(400)
-    .then((res) => {
-      console.log(res)
-      expect(res.text).toBe("Bad Request!")
-    })
-  })
+      .get(
+        "/api/reviews?sort_by=created_at&order=blimey&sort_by=social+deduction"
+      )
+      .expect(400)
+      .then((res) => {
+        expect(res.text).toBe("Bad Request!");
+      });
+  });
 
-  test.only("returns a 404 not found if a category entered does not exist in the database", () => {
-    return request(app).get('/api/reviews?sort_by=owner&category=horror')
-    .expect(404)
-    .then((res) => {
-      console.log(res)
-      expect(res.text).toBe("Not Found")
-    })
-  })
-
+  test("returns a 404 not found if a category entered does not exist in the database", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=owner&category=horror")
+      .expect(404)
+      .then((res) => {
+        expect(res.text).toBe("Not Found");
+      });
+  });
 });
 
-
-
-
 // error testing
-
 
 // Request body accepts:
 
