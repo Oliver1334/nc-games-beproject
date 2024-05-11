@@ -74,6 +74,11 @@ exports.insertComment = (review_id, username, body) => {
 };
 
 exports.deleteSelectedComment = (comment_id) => {
+
+  // if (isNaN(comment_id)) {
+  //   return Promise.reject({ status: 400, msg: "Bad!" });
+  // }
+
   return db.query(
     `
     DELETE FROM comments
@@ -82,7 +87,7 @@ exports.deleteSelectedComment = (comment_id) => {
     `, [comment_id]
   ).then(({rows, rowCount})=>{
     if (rowCount === 0) {
-      return Promise.reject({status: 404, message: "No comment found for this id: ${comment_id}"})
+      return Promise.reject({status: 404, message: `No comment found for this id: ${comment_id}`})
     }
     return rows[0]
   })
