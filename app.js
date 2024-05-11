@@ -11,6 +11,7 @@ const {
   deleteComment,
 } = require("./controllers/commentsControllers");
 const { getUsers } = require("./controllers/usersControllers");
+const { getEndPoints } = require("./controllers/endPointsControllers")
 const {
   status500Error,
   status404Error,
@@ -37,6 +38,8 @@ app.post("/api/reviews/:review_id/comments", postCommentOnReview);
 app.patch("/api/reviews/:review_id", updateVotes);
 
 app.get("/api/users", getUsers);
+
+app.get("/api", getEndPoints)
 
 app.delete("/api/comments/:comment_id", deleteComment)
 
