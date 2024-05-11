@@ -522,29 +522,31 @@ test('400 error if a bad comment id is passed', () =>{
             expect(body.msg).toBe('Bad Request!')
         })
 })
+})
 
+describe.only('GET /api', () => {
+  test('GET: 200 /api responds with a JSON describing all available endpoints', () => {
+    return request(app)
+    .get('/api')
+    .expect(200)
+    .expect('Content-Type', /json/)
+    .then(({body}) => {
+      const endpoints = JSON.parse(body.endpoints)
+
+      expect(endpoints).toHaveProperty("GET /api")
+      expect(endpoints).toHaveProperty("GET /api/reviews")
+      expect(endpoints).toHaveProperty("GET /api/reviews/:review_id/comments")
+      expect(endpoints).toHaveProperty("GET /api/users")
+      expect(endpoints).toHaveProperty("POST /api/reviews/:review_id/comments")
+      expect(endpoints).toHaveProperty("DELETE /api/comments/:comment_id")
+      expect(endpoints).toHaveProperty("PATCH /api/reviews/:review_id")
+      expect(endpoints).toHaveProperty("GET /api/reviews/:review_id")
+
+    })
+  })
 })
 
 
 
 
-// error testing
 
-// Request body accepts:
-
-// an object in the form { inc_votes: newVote }
-
-// newVote will indicate how much the votes property in the database should be updated bye.g.
-
-// { inc_votes : 1 } would increment the current review's vote property by 1
-
-// { inc_votes : -100 } would decrement the current review's vote property by 100
-
-// Responds with:
-
-// the updated review
-// Error handling
-// 400 error missing required fields (newvote: 100) and one for (incvote: "100")
-// 400 bad request (votes:word)
-// custom 404 out of range review id
-// 404 review id notanID
