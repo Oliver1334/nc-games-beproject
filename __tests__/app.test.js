@@ -492,7 +492,7 @@ describe("GET: 200 /api/reviews using queries ERRORS", () => {
   });
 });
 
-describe.only('DELETE /api/comments/:comment_id', () => {
+describe('DELETE /api/comments/:comment_id', () => {
   test('DELETE: 204 /api/comments/comment_id deletes a comment given an id', () => {
     return request(app)
     .delete('/api/comments/1')
@@ -502,6 +502,27 @@ describe.only('DELETE /api/comments/:comment_id', () => {
       expect(res.statusMessage).toBe('No Content')
     })
    })
+})
+
+describe('DELETE /api/comments/:comment_id errors', () => {
+  test('404 error if a comment does not exist', () => {
+    return request(app)
+        .delete('/api/comments/1334')
+        .expect(404)
+        .then((res)=>{
+            expect(res.text).toBe('No comment found for this id: 1334')
+        })
+})
+
+test('400 error if a bad comment id is passed', () =>{
+    return request(app)
+        .delete('/api/comments/notanumber')
+        .expect(400)
+        .then(({body})=>{
+            expect(body.msg).toBe('Bad Request!')
+        })
+})
+
 })
 
 
