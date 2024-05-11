@@ -1,4 +1,4 @@
-const { selectComments, insertComment } = require("../models/comments.models");
+const { selectComments, insertComment, deleteSelectedComment } = require("../models/comments.models");
 
 exports.getComments = (req, res, next) => {
   const { review_id } = req.params;
@@ -29,4 +29,14 @@ exports.postCommentOnReview = (req, res, next) => {
   }
 };
 
+exports.deleteComment = (req, res, next) => {
+  const { comment_id } = req.params;
 
+  return deleteSelectedComment(comment_id)
+    .then(() => {
+      res.status(204).send();
+    })
+    .catch((err) => {
+      next(err);
+    });
+};

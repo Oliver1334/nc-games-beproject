@@ -1,9 +1,14 @@
 const express = require("express");
 const { getCategories } = require("./controllers/categoryControllers");
-const { getReviews, getReviewId, updateVotes } = require("./controllers/reviewsControllers");
+const {
+  getReviews,
+  getReviewId,
+  updateVotes,
+} = require("./controllers/reviewsControllers");
 const {
   getComments,
   postCommentOnReview,
+  deleteComment,
 } = require("./controllers/commentsControllers");
 const { getUsers } = require("./controllers/usersControllers");
 const {
@@ -13,7 +18,7 @@ const {
   custom404Error,
 } = require("./controllers/errorControllers");
 const app = express();
-const cors = require ('cors');
+const cors = require("cors");
 
 app.use(cors());
 
@@ -29,14 +34,13 @@ app.get("/api/reviews/:review_id/comments", getComments);
 
 app.post("/api/reviews/:review_id/comments", postCommentOnReview);
 
-app.patch("/api/reviews/:review_id", updateVotes)
+app.patch("/api/reviews/:review_id", updateVotes);
 
 app.get("/api/users", getUsers);
 
+app.delete("/api/comments/:comment_id", deleteComment)
 
 app.all("/*", status404Error);
-
-
 
 app.use(psqlErrorHandler);
 
