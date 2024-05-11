@@ -70,7 +70,7 @@ describe("GET: 200 /api/reviews", () => {
   });
 });
 
-describe.only("GET:200 /api/reviews/:review_id", () => {
+describe("GET:200 /api/reviews/:review_id", () => {
   test("responds with a review object with 9 properties and a 10th comment_count property", () => {
     return request(app)
       .get("/api/reviews/4")
@@ -491,6 +491,21 @@ describe("GET: 200 /api/reviews using queries ERRORS", () => {
       });
   });
 });
+
+describe.only('DELETE /api/comments/:comment_id', () => {
+  test('DELETE: 204 /api/comments/comment_id deletes a comment given an id', () => {
+    return request(app)
+    .delete('/api/comments/1')
+    .expect(204)
+    .then(({res}) => {
+      console.log(res.statusMessage)
+      expect(res.statusMessage).toBe('No Content')
+    })
+   })
+})
+
+
+
 
 // error testing
 
