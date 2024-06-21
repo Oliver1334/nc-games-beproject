@@ -12,6 +12,7 @@ exports.selectReviews = (category, sort_by = "created_at", order = "DESC") => {
     "owner",
     "created_at",
     "votes",
+    "comment_count"
   ];
 
   const orderGreenList = ["ASC", "DESC"]; // array of valid order options
