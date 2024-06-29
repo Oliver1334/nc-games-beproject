@@ -1,6 +1,6 @@
 # NC Games Backend
 
-This is a Restful Web API built with Node.js and Express for NC Games, an aggregator website featuring board game reviews. It utilises interactions with PSQL databases and created through TDD.
+This is a Restful Web API built with Node.js and Express for NC Games, an aggregator website featuring board game reviews. It utilises interactions with PSQL databases created through TDD.
 You can view this project here: https://nc-games-2kfx.onrender.com/api/reviews
 
 A summary of all possible endpoint functionalities can be viewed at the [/api](https://nc-games-2kfx.onrender.com/api) endpoint.
